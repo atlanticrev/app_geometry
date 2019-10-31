@@ -17,6 +17,10 @@
       border: 0;
       box-sizing: border-box;
     }
+
+    canvas {
+    	background-color: #145492;
+    }
   </style>
   <title>Math</title>
 </head>
@@ -28,44 +32,79 @@
     const canvas = document.querySelector('canvas');
     const ctx = canvas.getContext('2d');
 
-    canvas.width = '800';
-    canvas.height = canvas.width;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
+    function normalizeCoordinateSystem() {
+    	ctx.transform(1, 0, 0, -1, 0, 0);
+    	ctx.translate(0, -canvas.height);
+    }
+    
     function toOrigin() {
-      ctx.moveTo(0, canvas.height);
+      ctx.moveTo(0, 0);
     }
 
     function lineTo(x, y) {
-      ctx.lineTo(x, Math.abs((y) - canvas.height));
+      ctx.lineTo(x * 50, y * 50);
     }
 
     function linear(x, k = 1, b = 0) {
       return y = k * x + b;
     }
 
-    // const x = 200;
-
     // canvas dimention mod step == 0!
-    const step = 40;
-    let i;
+    const step = 50;
 
-    // toOrigin();
-    // lineTo(x, linear(x));
-    ctx.beginPath();
+    function renderGrid(step) {
+    	for (let i = 0; i <= canvas.height; i += step) {
+	    	ctx.beginPath();
+	      ctx.moveTo(0, i);
+	      ctx.lineTo(canvas.width, i);
+	      ctx.strokeStyle = 'rgba(256, 256, 256, .2)';
+	      ctx.stroke();
+    	} 
 
-    for (i = 0; i <= canvas.height; i += step) {
-      ctx.moveTo(0, i);
-      ctx.lineTo(canvas.width, i);
-      ctx.strokeStyle = 'blue';
-      ctx.stroke();
-    } 
+	    for (let i = 0; i <= canvas.width; i += step) {
+	    	ctx.beginPath();
+	      ctx.moveTo(i, 0);
+	      ctx.lineTo(i, canvas.height);
+	      ctx.strokeStyle = 'rgba(256, 256, 256, .2)';
+	      ctx.stroke();
+	    } 
+  	}
 
-    for (i = 0; i <= canvas.width; i += step) {
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i, canvas.height);
-      ctx.strokeStyle = 'blue';
-      ctx.stroke();
-    }     
+  	function init() {
+  		ctx.clearRect(0, 0, canvas.width, canvas.height);
+  		normalizeCoordinateSystem();
+  		renderGrid(step);
+  		renderGrid(step / 5);
+  	}
+
+  	window.addEventListener('resize', () => {
+  		canvas.width = window.innerWidth;
+   	 	canvas.height = window.innerHeight;
+  		init();
+  		contentRender();
+  	});
+
+  	function contentRender() {
+  		ctx.beginPath();
+	  	ctx.rect(150, 150, 550, 550)
+	  	ctx.strokeStyle = 'white';
+	  	ctx.stroke();
+
+	  	ctx.beginPath();
+  		toOrigin();
+  		lineTo(1, 1);
+  		lineTo(2, 4);
+  		lineTo(5, 3);
+  		ctx.lineWidth = '2'
+  		ctx.strokeStyle = 'white';
+  		ctx.stroke();
+  	}
+
+  	init();
+  	contentRender();
 
   </script>
 </body>
