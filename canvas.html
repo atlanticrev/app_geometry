@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      box-sizing: border-box;
+    }
+  </style>
+  <title>Math</title>
+</head>
+
+<body>
+  <canvas></canvas>  
+
+  <script>
+    const canvas = document.querySelector('canvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = '800';
+    canvas.height = canvas.width;
+
+    function toOrigin() {
+      ctx.moveTo(0, canvas.height);
+    }
+
+    function lineTo(x, y) {
+      ctx.lineTo(x, Math.abs((y) - canvas.height));
+    }
+
+    function linear(x, k = 1, b = 0) {
+      return y = k * x + b;
+    }
+
+    // const x = 200;
+
+    // canvas dimention mod step == 0!
+    const step = 40;
+    let i;
+
+    // toOrigin();
+    // lineTo(x, linear(x));
+    ctx.beginPath();
+
+    for (i = 0; i <= canvas.height; i += step) {
+      ctx.moveTo(0, i);
+      ctx.lineTo(canvas.width, i);
+      ctx.strokeStyle = 'blue';
+      ctx.stroke();
+    } 
+
+    for (i = 0; i <= canvas.width; i += step) {
+      ctx.moveTo(i, 0);
+      ctx.lineTo(i, canvas.height);
+      ctx.strokeStyle = 'blue';
+      ctx.stroke();
+    }     
+
+  </script>
+</body>
+
+</html>
