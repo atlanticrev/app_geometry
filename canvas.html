@@ -16,10 +16,12 @@
       padding: 0;
       border: 0;
       box-sizing: border-box;
+
+      --blueprint-color: #145492;
     }
 
     canvas {
-    	background-color: #145492;
+    	background-color: var(--blueprint-color);
     }
   </style>
   <title>Math</title>
@@ -35,9 +37,15 @@
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
+    const step = 50;
+
     function normalizeCoordinateSystem() {
     	ctx.transform(1, 0, 0, -1, 0, 0);
     	ctx.translate(0, -canvas.height);
+    }
+
+    function toWorkingOrigin() {
+      ctx.translate(step, step);
     }
     
     function toOrigin() {
@@ -49,18 +57,24 @@
     }
 
     function linear(x, k = 1, b = 0) {
-      return y = k * x + b;
+      return k * x + b;
     }
 
-    // canvas dimention mod step == 0!
-    const step = 50;
+    function quadratic(x, a = 1, b = 0, c = 0) {
+      return a * x * x + b * x + c;
+    }
+
+    function sin(x) {
+      return Math.sin(x);
+    }
 
     function renderGrid(step) {
+
     	for (let i = 0; i <= canvas.height; i += step) {
 	    	ctx.beginPath();
 	      ctx.moveTo(0, i);
 	      ctx.lineTo(canvas.width, i);
-	      ctx.strokeStyle = 'rgba(256, 256, 256, .2)';
+	      ctx.strokeStyle = 'rgba(256, 256, 256, .1)';
 	      ctx.stroke();
     	} 
 
@@ -68,17 +82,100 @@
 	    	ctx.beginPath();
 	      ctx.moveTo(i, 0);
 	      ctx.lineTo(i, canvas.height);
-	      ctx.strokeStyle = 'rgba(256, 256, 256, .2)';
+	      ctx.strokeStyle = 'rgba(256, 256, 256, .1)';
 	      ctx.stroke();
 	    } 
+
   	}
+
+    function renderNumbers(step) {
+      ctx.save();      
+      ctx.scale(1, -1);
+
+      let numberY = 0;
+      let numberX = 0;
+
+    	for (let i = 0; i <= canvas.height; i += step) {
+
+	    	ctx.font = "16px sans-serif";
+        ctx.fillStyle = 'rgba(256, 256, 256, .5)';
+        ctx.fillText(`${numberY}`, -30, -i);
+
+        numberY++;
+    	} 
+
+      for (let i = 0; i <= canvas.width; i += step) {
+
+        ctx.font = "16px sans-serif";
+        ctx.fillStyle = 'rgba(256, 256, 256, .5)';
+        ctx.fillText(`${numberX}`, i, 20);
+
+        numberX++;
+      } 
+
+      ctx.restore();    // Restore the initial canvas state
+
+    }
+
+    function printLinearGraph(k, b = 0) {
+      ctx.beginPath();
+
+      for (let x = 0; x <= 30; x+= .0001) {
+        lineTo(x, 1.5 * sin(2 * x) + 5);
+      }
+
+      ctx.strokeStyle = 'rgba(256, 256, 256, 1)'
+      ctx.lineWidth = '2';
+      ctx.stroke();
+
+    }
+
+    function printStatisticalGraph() {
+      ctx.beginPath();
+  		toOrigin();
+  		lineTo(1, 1);
+  		lineTo(2, 4);
+  		lineTo(5, 3);
+  		lineTo(10, 8);
+  		lineTo(12, 3);
+  		lineTo(15, 11);
+      lineTo(16, 1);
+  		lineTo(21, 4);
+  		lineTo(25, 3);
+  		lineTo(30, 8);
+  		lineTo(32, 3);
+  		lineTo(34, 11);
+
+  		ctx.lineWidth = '3';
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+  		ctx.strokeStyle = 'white';
+  		ctx.stroke();
+
+      lineTo(34, 0);
+      ctx.closePath();
+
+      ctx.fillStyle = 'rgba(256, 256, 256, .4)';
+      ctx.fill();
+    }
 
   	function init() {
   		ctx.clearRect(0, 0, canvas.width, canvas.height);
   		normalizeCoordinateSystem();
   		renderGrid(step);
   		renderGrid(step / 5);
+      toWorkingOrigin();
+      renderNumbers(step);
   	}
+
+    function printRectange() {
+
+  		ctx.beginPath();
+	  	ctx.rect(150, 150, 550, 550)
+	  	ctx.strokeStyle = 'white';
+	  	ctx.stroke();
+
+    }
 
   	window.addEventListener('resize', () => {
   		canvas.width = window.innerWidth;
@@ -88,19 +185,10 @@
   	});
 
   	function contentRender() {
-  		ctx.beginPath();
-	  	ctx.rect(150, 150, 550, 550)
-	  	ctx.strokeStyle = 'white';
-	  	ctx.stroke();
 
-	  	ctx.beginPath();
-  		toOrigin();
-  		lineTo(1, 1);
-  		lineTo(2, 4);
-  		lineTo(5, 3);
-  		ctx.lineWidth = '2'
-  		ctx.strokeStyle = 'white';
-  		ctx.stroke();
+      // printLinearGraph(.5);
+      printStatisticalGraph();
+
   	}
 
   	init();
