@@ -97,17 +97,21 @@
 
     	for (let i = 0; i <= canvas.height; i += step) {
 
-	    	ctx.font = "16px sans-serif";
+	    	ctx.font = '12px sans-serif';
         ctx.fillStyle = 'rgba(256, 256, 256, .5)';
-        ctx.fillText(`${numberY}`, -30, -i);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`${numberY}`, -20, -i);
 
         numberY++;
     	} 
 
       for (let i = 0; i <= canvas.width; i += step) {
 
-        ctx.font = "16px sans-serif";
+        ctx.font = '12px sans-serif';
         ctx.fillStyle = 'rgba(256, 256, 256, .5)';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
         ctx.fillText(`${numberX}`, i, 20);
 
         numberX++;
