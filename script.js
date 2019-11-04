@@ -140,17 +140,15 @@ function printWorkSpace() {
 
 class Triangle {
 
-    constructor(coordinates) {
+    constructor(vertices, options) {
 
-        this.firstVertex = coordinates[0];
-        this.secondVertex = coordinates[1]; 
-        this.thirdVertex = coordinates[2];
+      Triangle.store.push(this);
 
-        this.coordinates = [this.firstVertex, this.secondVertex, this.thirdVertex];
+        this.vertices = [vertices[0], vertices[1], vertices[2]];
 
-        this.vertexRadius = 5 / 50;
-        this.linesColor = 'white';
-        this.vertexColor = 'white';
+        this.vertexRadius = options.vertexRadius;
+        this.edgesColor = options.edgesColor;
+        this.vertexColor = options.vertexColor;
 
         this.init();
 
@@ -163,28 +161,28 @@ class Triangle {
         ctx.scale(scaleFactor, scaleFactor);
 
         ctx.beginPath();
-        ctx.moveTo(this.firstVertex[0], this.firstVertex[1]);
-        ctx.arc(this.firstVertex[0], this.firstVertex[1], this.vertexRadius, 0, Math.PI * 2, true);
-        ctx.moveTo(this.secondVertex[0], this.secondVertex[1]);
-        ctx.arc(this.secondVertex[0], this.secondVertex[1], this.vertexRadius, 0, Math.PI * 2, true);
-        ctx.moveTo(this.thirdVertex[0], this.thirdVertex[1]);
-        ctx.arc(this.thirdVertex[0], this.thirdVertex[1], this.vertexRadius, 0, Math.PI * 2, true);
-
-        ctx.fillStyle = this.vertexColor;
-        ctx.fill();
-        
-        ctx.beginPath();
-        ctx.moveTo(this.firstVertex[0], this.firstVertex[1]);
-        ctx.lineTo(this.secondVertex[0], this.secondVertex[1]);
-        ctx.lineTo(this.thirdVertex[0], this.thirdVertex[1]);
+        ctx.moveTo(this.vertices[0][0], this.vertices[0][1]);
+        ctx.lineTo(this.vertices[1][0], this.vertices[1][1]);
+        ctx.lineTo(this.vertices[2][0], this.vertices[2][1]);
         ctx.closePath();
         
         ctx.lineWidth = `${this.vertexRadius / 2}`;
-        ctx.strokeStyle = this.linesColor;
+        ctx.strokeStyle = this.edgesColor;
         ctx.lineJoin = 'round';
         ctx.stroke(); 
 
-        ctx.fillStyle = 'rgba(256, 256, 256, .5)';
+        ctx.fillStyle = 'rgba(256, 256, 256, .1)';
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(this.vertices[0][0], this.vertices[0][1]);
+        ctx.arc(this.vertices[0][0], this.vertices[0][1], this.vertexRadius, 0, Math.PI * 2, true);
+        ctx.moveTo(this.vertices[1][0], this.vertices[1][1]);
+        ctx.arc(this.vertices[1][0], this.vertices[1][1], this.vertexRadius, 0, Math.PI * 2, true);
+        ctx.moveTo(this.vertices[2][0], this.vertices[2][1]);
+        ctx.arc(this.vertices[2][0], this.vertices[2][1], this.vertexRadius, 0, Math.PI * 2, true);
+
+        ctx.fillStyle = this.vertexColor;
         ctx.fill();
         
         ctx.restore();
@@ -197,61 +195,65 @@ class Triangle {
 
 }
 
+Triangle.store = [];
+
+triangleOptions = {
+  vertexRadius: 5 / 50,
+  edgesColor: 'black',
+  vertexColor: 'black'
+};
+
+const triangle = new Triangle([[10.16, 8.1], [2, 5], [10.54, 5.66]], triangleOptions);
+const triangle1 = new Triangle([[5.92, 4.2], [8.6, 2.4], [11.62, 4.3]], triangleOptions);
+const triangle2 = new Triangle([[13, 1], [18.2, 5], [13.36, 7.52]], triangleOptions);
+const triangle3 = new Triangle([[4.54, 9.64], [7.62, 8.86], [18.8, 12.48]], triangleOptions);
+const triangle4 = new Triangle([[14, 12], [7.72, 11.3], [15.14, 16.18]], triangleOptions);
+const triangle5 = new Triangle([[8.66, 13.64], [3, 14], [2.9, 11.4]], triangleOptions);
+
 printWorkSpace();
 
-const triangle = new Triangle([[5, 10], [7.5, 5], [10, 10]]);
-
-function onMove(vertex, e) {
+function onMove(triangle, vertexIndex, e, event) {
 
   mouse = {
-    x: e.clientX / scaleFactor,
-    y: e.clientY / scaleFactor
+    x: event.clientX / scaleFactor,
+    y: event.clientY / scaleFactor
   };
 
-  vertex[0] = mouse.x;
-	vertex[1] = mouse.y;
+  triangle.vertices[vertexIndex][0] = mouse.x;
+  triangle.vertices[vertexIndex][1] = mouse.y;
 
 	printWorkSpace();
 
-  triangle.draw();
+  Triangle.store.forEach((triangle) => {
+    triangle.draw();
+  });
 
 }
 
-function firstVertexMove(e) {
-  onMove(triangle.firstVertex, e);
-}
-
-function secondVertexMove(e) {
-  onMove(triangle.secondVertex, e);
-}
-
-function thirdVertexMove(e) {
-  onMove(triangle.thirdVertex, e);
-}
+let onMoveListener;
 
 window.onload = function() {
 
-  window.addEventListener('mousedown', (e) => {
+  document.addEventListener('mousedown', (e) => {
 
   mouse = {
     x: e.clientX / scaleFactor,
     y: e.clientY / scaleFactor
   };
 
-  if ( Math.abs(mouse.x - triangle.firstVertex[0]) <= triangle.vertexRadius && Math.abs(mouse.y - triangle.firstVertex[1]) <= triangle.vertexRadius ) {
-    window.addEventListener('mousemove', firstVertexMove);
-  } else if ( Math.abs(mouse.x - triangle.secondVertex[0]) <= triangle.vertexRadius && Math.abs(mouse.y - triangle.secondVertex[1]) <= triangle.vertexRadius ) {
-    window.addEventListener('mousemove', secondVertexMove);
-  } else if ( Math.abs(mouse.x - triangle.thirdVertex[0]) <= triangle.vertexRadius && Math.abs(mouse.y - triangle.thirdVertex[1]) <= triangle.vertexRadius ) {
-    window.addEventListener('mousemove', thirdVertexMove);
-  }
+  Triangle.store.forEach((triangle) => {
+    triangle.vertices.forEach((vertex, vertexIndex) => {
+      if ( Math.abs(mouse.x - vertex[0]) <= triangle.vertexRadius && Math.abs(mouse.y - vertex[1]) <= triangle.vertexRadius ) {
+        document.addEventListener('mousemove', onMoveListener = onMove.bind(null, triangle, vertexIndex, e));
+      }
+    });
+  });
+
 });
 
-window.addEventListener('mouseup', () => {
+document.addEventListener('mouseup', () => {
 
-    window.removeEventListener('mousemove', firstVertexMove);
-    window.removeEventListener('mousemove', secondVertexMove);
-    window.removeEventListener('mousemove', thirdVertexMove); 
+    document.removeEventListener('mousemove', onMoveListener);
   
 });
 
