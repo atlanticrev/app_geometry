@@ -58,8 +58,8 @@ function printNumbers(scaleFactor) {
 				continue;
 			}
 
-			ctx.font = '12px sans-serif';
-			ctx.fillStyle = 'rgba(256, 256, 256, 1)';
+			ctx.font = '14px sans-serif';
+			ctx.fillStyle = 'rgba(256, 256, 256, .4)';
 			ctx.textAlign = 'left';
 			ctx.textBaseline = 'middle';
 			ctx.fillText(`${numberY}`, 0, i);
@@ -75,8 +75,8 @@ function printNumbers(scaleFactor) {
 			continue;
 		}
 
-    ctx.font = '12px sans-serif';
-    ctx.fillStyle = 'rgba(256, 256, 256, 1)';
+    ctx.font = '14px sans-serif';
+    ctx.fillStyle = 'rgba(256, 256, 256, .4)';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillText(`${numberX}`, i, 0);
@@ -129,12 +129,16 @@ function printStatisticalGraph() {
   ctx.fill();
 }
 
-function printWorkSpace() {
+function printWorkingSpace() {
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	printGrid(scaleFactor);
 	printGrid(scaleFactor / 5);
-	printNumbers(scaleFactor);
+  printNumbers(scaleFactor);
+  
+  Triangle.store.forEach((triangle) => {
+    triangle.draw();
+  });
 
 }
 
@@ -149,8 +153,6 @@ class Triangle {
         this.vertexRadius = options.vertexRadius;
         this.edgesColor = options.edgesColor;
         this.vertexColor = options.vertexColor;
-
-        this.init();
 
     }
 
@@ -189,10 +191,6 @@ class Triangle {
         
     }
 
-    init() {
-        this.draw();
-    }
-
 }
 
 Triangle.store = [];
@@ -202,15 +200,6 @@ triangleOptions = {
   edgesColor: 'black',
   vertexColor: 'black'
 };
-
-const triangle = new Triangle([[10.16, 8.1], [2, 5], [10.54, 5.66]], triangleOptions);
-const triangle1 = new Triangle([[5.92, 4.2], [8.6, 2.4], [11.62, 4.3]], triangleOptions);
-const triangle2 = new Triangle([[13, 1], [18.2, 5], [13.36, 7.52]], triangleOptions);
-const triangle3 = new Triangle([[4.54, 9.64], [7.62, 8.86], [18.8, 12.48]], triangleOptions);
-const triangle4 = new Triangle([[14, 12], [7.72, 11.3], [15.14, 16.18]], triangleOptions);
-const triangle5 = new Triangle([[8.66, 13.64], [3, 14], [2.9, 11.4]], triangleOptions);
-
-printWorkSpace();
 
 function onMove(triangle, vertexIndex, e, event) {
 
@@ -222,11 +211,7 @@ function onMove(triangle, vertexIndex, e, event) {
   triangle.vertices[vertexIndex][0] = mouse.x;
   triangle.vertices[vertexIndex][1] = mouse.y;
 
-	printWorkSpace();
-
-  Triangle.store.forEach((triangle) => {
-    triangle.draw();
-  });
+	printWorkingSpace();
 
 }
 
@@ -258,3 +243,12 @@ document.addEventListener('mouseup', () => {
 });
 
 }
+
+const triangle = new Triangle([[10.16, 8.1], [2, 5], [10.54, 5.66]], triangleOptions);
+const triangle1 = new Triangle([[5.92, 4.2], [8.6, 2.4], [11.62, 4.3]], triangleOptions);
+const triangle2 = new Triangle([[13, 1], [18.2, 5], [13.36, 7.52]], triangleOptions);
+const triangle3 = new Triangle([[4.54, 9.64], [7.62, 8.86], [18.8, 12.48]], triangleOptions);
+const triangle4 = new Triangle([[14, 12], [7.72, 11.3], [15.14, 16.18]], triangleOptions);
+const triangle5 = new Triangle([[8.66, 13.64], [3, 14], [2.9, 11.4]], triangleOptions);
+
+printWorkingSpace();
