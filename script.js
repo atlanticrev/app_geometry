@@ -58,7 +58,7 @@ function printNumbers(scaleFactor) {
 				continue;
 			}
 
-			ctx.font = '14px sans-serif';
+			ctx.font = `${scaleFactor / 3.57}px sans-serif`;
 			ctx.fillStyle = 'rgba(256, 256, 256, .4)';
 			ctx.textAlign = 'left';
 			ctx.textBaseline = 'middle';
@@ -75,7 +75,7 @@ function printNumbers(scaleFactor) {
 			continue;
 		}
 
-    ctx.font = '14px sans-serif';
+    ctx.font = `${scaleFactor / 3.57}px sans-serif`;;
     ctx.fillStyle = 'rgba(256, 256, 256, .4)';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
@@ -196,7 +196,7 @@ class Triangle {
 Triangle.store = [];
 
 triangleOptions = {
-  vertexRadius: 5 / 50,
+  vertexRadius: .1,
   edgesColor: 'black',
   vertexColor: 'black'
 };
